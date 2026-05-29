@@ -1,0 +1,258 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard", "Inter", sans-serif;
+  --color-primary: #006CFF;
+  --color-bg-pastel: #EBF4FF;
+}
+
+/* Pretendard Web Font CDN */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css");
+
+body {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  background-color: #0f172a; /* Slate-900 background for outer screen bezel display */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Fixed 1080x1920 Signage Viewport Scaling Container */
+.signage-viewport {
+  width: 1080px;
+  height: 1920px;
+  background-color: #EBF4FF;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.61);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* Layout definitions as requested by the user */
+.layout-padding {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+.layout-bottom-space {
+  height: 648px; /* Doubled from 324px as requested */
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* 3x3 Card Grid definitions */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 24px;
+  row-gap: 32px; /* Expanded vertical matrix gap */
+}
+
+/* White round cards config */
+.school-card {
+  background: #ffffff;
+  border-radius: 32px; /* Radius: 32px */
+  padding: 32px; /* Inner padding: 32px */
+  height: 410px; /* Taller vertical card height to stretch the vertical matrix */
+  box-shadow: 0 12px 28px -4px rgba(0, 108, 255, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically in taller card */
+  text-align: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+}
+
+.school-card:active {
+  transform: scale(0.95);
+  background-color: #f8faff;
+  box-shadow: 0 4px 10px -2px rgba(0, 108, 255, 0.08);
+}
+
+/* Custom 3D active shadow effect */
+.school-card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 34px;
+  border: 3px solid #006CFF;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.school-card:hover::after {
+  opacity: 0.1;
+}
+
+/* Interactive Modal / Sub-page Fullscreen View */
+.tool-detail-view {
+  position: absolute;
+  inset: 0;
+  background-color: #EBF4FF;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(40px) scale(0.98);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tool-detail-view.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Tools detail card container style */
+.tool-content-card {
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 40px;
+  box-shadow: 0 16px 40px -10px rgba(0, 108, 255, 0.08);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-left: 48px;
+  margin-right: 48px;
+  margin-bottom: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+}
+
+/* 3D Glassy Icon Circles on #EBF4FF */
+.icon-circle {
+  width: 168px;
+  height: 168px;
+  border-radius: 9999px;
+  background-color: #EBF4FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: inset 0 4px 10px rgba(255, 255, 255, 0.6), 0 8px 16px -4px rgba(0, 108, 255, 0.12);
+  margin-bottom: 24px;
+}
+
+/* Compact empty space at the bottom of detail views to allow 30% height increase on card modals */
+.detail-bottom-space {
+  height: 200px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Custom animation classes */
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.bounce-avatar {
+  animation: bounce-subtle 4s ease-in-out infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.pulse-active {
+  animation: pulse-icon 2s ease-in-out infinite;
+}
+
+/* Drawing Canvas Stylings */
+#paint-canvas {
+  background-color: #ffffff;
+  border: 2px solid #e1e7f0;
+  border-radius: 20px;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.paint-tool-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  transition: all 0.15s ease-in-out;
+}
+
+.paint-tool-btn.active {
+  border-color: #006CFF;
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0, 108, 255, 0.3);
+}
+
+/* Piano Key Styling */
+.piano-key {
+  height: 240px;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: all 0.1s ease;
+  cursor: pointer;
+}
+
+.piano-key:active {
+  height: 232px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom Alert Overlay */
+.custom-alert {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background-color: #006CFF;
+  color: white;
+  border-radius: 24px;
+  padding: 24px 48px;
+  font-size: 32px;
+  font-weight: 600;
+  box-shadow: 0 20px 40px rgba(0, 108, 255, 0.3);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-alert.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Card Modals (tool views) typography size increase by 10% */
+.tool-detail-view .text-\[114px\] { font-size: 125px !important; }
+.tool-detail-view .text-\[108px\] { font-size: 119px !important; }
+.tool-detail-view .text-\[96px\] { font-size: 106px !important; }
+.tool-detail-view .text-\[90px\] { font-size: 99px !important; }
+.tool-detail-view .text-\[72px\] { font-size: 79px !important; }
+.tool-detail-view .text-\[64px\] { font-size: 70px !important; }
+.tool-detail-view .text-\[48px\] { font-size: 53px !important; }
+.tool-detail-view .text-\[42px\] { font-size: 46px !important; }
+.tool-detail-view .text-\[38px\] { font-size: 42px !important; }
+.tool-detail-view .text-\[36px\] { font-size: 40px !important; }
+.tool-detail-view .text-\[34px\] { font-size: 37px !important; }
+.tool-detail-view .text-\[30px\] { font-size: 33px !important; }
+.tool-detail-view .text-\[28px\] { font-size: 31px !important; }
+.tool-detail-view .text-\[26px\] { font-size: 29px !important; }
+.tool-detail-view .text-\[24px\] { font-size: 26px !important; }
+.tool-detail-view .text-\[22px\] { font-size: 24px !important; }
+.tool-detail-view .text-\[20px\] { font-size: 22px !important; }
+.tool-detail-view .text-\[18px\] { font-size: 20px !important; }

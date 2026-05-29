@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>수업 도우미 (Classroom Helper)</title>
+    <!-- Separate styled CSS link -->
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <!-- Fullscreen wrapper that centers and scales the signage for any screen resolution -->
+    <div class="scale-wrapper w-full h-full flex items-center justify-center bg-slate-900 overflow-hidden">
+      
+      <!-- Fixed 1080x1920 Signage Board -->
+      <div id="signage-canvas" class="signage-viewport relative flex flex-col justify-between">
+        
+        <!-- CUSTOM AUDIO ALERT OVERLAY -->
+        <div id="audio-alert" class="custom-alert">알림!</div>
+
+        <!-- ============================================== -->
+        <!-- 1. MAIN DASHBOARD VIEW                         -->
+        <!-- ============================================== -->
+        <div id="view-dashboard" class="w-full h-full flex flex-col justify-start">
+          
+          <!-- Dashboard Upper Section: Header (Logo + Mascot) -->
+          <div class="layout-padding pt-[52px] flex justify-between items-start">
+            <div class="flex flex-col">
+              <span class="text-[32px] font-medium text-slate-600 tracking-tight leading-normal mb-4 block">
+                수업을 더 즐겁고 효과적으로!
+              </span>
+              <h1 class="text-[76px] font-extrabold tracking-tight leading-tight mb-6">
+                <span class="text-slate-700">수업</span> <span class="text-[#006CFF]">도우미</span>
+              </h1>
+              <span class="text-[26px] font-medium text-slate-400 tracking-tight leading-[1.6] block">
+                필요한 도구를 선택해<br>활용해보세요!
+              </span>
+            </div>
+            
+            <!-- Cute Mascot Helper (Clean high-contrast vector smile mascot) -->
+            <div class="relative w-[408px] h-[408px] flex items-end justify-center select-none -mt-20">
+              <img id="mascot-img" src="/src/assets/images/character11.png" class="w-full h-full object-contain object-bottom pointer-events-none" referrerPolicy="no-referrer" alt="Mascot">
+            </div>
+          </div>
+
+          <!-- Dashboard Middle Section: 3x3 Tool Cards Grid -->
+          <div class="layout-padding mt-[-40px]">
+            <div class="cards-grid select-none">
+              
+              <!-- Card 1: Timer -->
+              <div class="school-card" onclick="openTool('timer')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/시계.png" class="w-[138px] h-[138px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="타이머" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">타이머</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">원하는 시간을 설정하고<br>카운트다운을 시작해요.</p>
+              </div>
+
+              <!-- Card 2: Pomodoro Timer -->
+              <div class="school-card" onclick="openTool('pomodoro')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/뽀모돌.png" class="w-[110px] h-[110px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="뽀모도로" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">뽀모도로 타이머</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">집중과 휴식을 반복하며<br>효율적으로 공부해요.</p>
+              </div>
+
+              <!-- Card 3: Stopwatch -->
+              <div class="school-card" onclick="openTool('stopwatch')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/스톰워치.png" class="w-[125px] h-[125px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="스톱워치" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">스톱워치</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">정확한 시간 측정이<br>필요할 때 사용해요.</p>
+              </div>
+
+              <!-- Card 4: World Clock -->
+              <div class="school-card" onclick="openTool('worldclock')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/세계시간.png" class="w-[132px] h-[132px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="세계시간" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">세계시간</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">전 세계의 시간을<br>한눈에 확인해요.</p>
+              </div>
+
+              <!-- Card 5: Drawing Board -->
+              <div class="school-card" onclick="openTool('paint')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/판서.png" class="w-[149px] h-[149px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="그림판" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">그림판(판서)</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">자유롭게 그리고 꾸며요.<br>스탬프와 배경도 활용해요.</p>
+              </div>
+
+              <!-- Card 6: Noise Decibel Meter -->
+              <div class="school-card" onclick="openTool('noise')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/소음.png" class="w-[149px] h-[149px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="소음측정기" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">소음측정기</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">주변 소음의 크기를<br>측정할 수 있어요.</p>
+              </div>
+
+              <!-- Card 7: Presenter Picker -->
+              <div class="school-card" onclick="openTool('picker')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/랜덤.png" class="w-[142px] h-[142px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="발표자 선정" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">발표자 선정</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">공정하고 재미있게<br>발표자를 선정해요.</p>
+              </div>
+
+              <!-- Card 8: Musical Instruments -->
+              <div class="school-card" onclick="openTool('instruments')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/악기.png" class="w-[131px] h-[131px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="악기" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">악기</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">다양한 악기를 연주하며<br>음악을 즐겨요.</p>
+              </div>
+
+              <!-- Card 9: Ladder Game -->
+              <div class="school-card" onclick="openTool('ladder')">
+                <div class="icon-circle overflow-hidden p-2">
+                  <img src="/src/assets/images/사다리.png" class="w-[151px] h-[151px] object-contain transform hover:scale-105 active:scale-95 transition-all duration-300" alt="사다리" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-[34px] font-bold text-slate-800 mb-2 whitespace-nowrap">사다리</h3>
+                <p class="text-[20px] font-medium text-slate-400 leading-normal">순서를 정하거나 선택을<br>도와주는 사다리 타기!</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom Margin Space: exactly 200px empty area at the bottom as requested -->
+          <div class="layout-bottom-space"></div>
+
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 2. INDIVIDUAL TOOL VIEWS                       -->
+        <!-- ============================================== -->
+
+        <!-- 1) TIMER DETAIL SCREEN -->
+        <div id="tool-timer" class="tool-detail-view justify-between">
+          <!-- Header (120px) -->
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/시계.png" class="w-[138px] h-[138px] object-contain" alt="타이머" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">타이머</span>
+            </div>
+            <button class="text-[36px] font-semibold text-[#006CFF]" onclick="closeTool()">닫기</button>
+          </div>
+          <!-- Body Card -->
+          <div class="tool-content-card justify-between items-center py-12">
+            <!-- Big Circular Timer Display -->
+            <div class="relative w-[480px] h-[480px] flex items-center justify-center rounded-full bg-slate-50 border-[24px] border-[#EBF4FF] shadow-inner">
+              <div class="flex flex-col items-center">
+                <span id="timer-display" class="font-mono text-[96px] font-extrabold text-slate-800 tabular-nums">05:00</span>
+                <span id="timer-status" class="text-[28px] font-semibold text-[#006CFF] tracking-widest mt-2 uppercase">준비 완료</span>
+              </div>
+              <svg class="absolute inset-[-24px] w-[480px] h-[480px] -rotate-90 pointer-events-none">
+                <circle id="timer-progress" cx="240" cy="240" r="228" stroke="#006CFF" stroke-width="24" fill="transparent" stroke-dasharray="1432" stroke-dashoffset="0" stroke-linecap="round" />
+              </svg>
+            </div>
+
+            <!-- Quick Add Spacing Buttons -->
+            <div class="grid grid-cols-4 gap-4 w-full px-6">
+              <button class="h-[80px] rounded-2xl bg-slate-100 hover:bg-slate-200 text-[28px] font-bold text-slate-700 active:scale-95 transition" onclick="adjustTimer(60)">+1분</button>
+              <button class="h-[80px] rounded-2xl bg-slate-100 hover:bg-slate-200 text-[28px] font-bold text-slate-700 active:scale-95 transition" onclick="adjustTimer(300)">+5분</button>
+              <button class="h-[80px] rounded-2xl bg-slate-100 hover:bg-slate-200 text-[28px] font-bold text-slate-700 active:scale-95 transition" onclick="adjustTimer(600)">+10분</button>
+              <button class="h-[80px] rounded-2xl bg-red-50 hover:bg-red-100 text-[28px] font-bold text-red-500 active:scale-95 transition" onclick="adjustTimer(-60)">-1분</button>
+            </div>
+          </div>
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex gap-[20px] items-center">
+            <button id="timer-primary" class="flex-1 h-[110px] text-[38px] font-semibold text-white bg-[#006CFF] rounded-[24px] active:scale-95 transition shadow-lg shadow-blue-500/20" onclick="toggleTimer()">시작</button>
+            <button class="flex-1 h-[110px] text-[38px] font-semibold text-[#006CFF] bg-white border-2 border-[#006CFF] rounded-[24px] active:scale-95 transition" onclick="resetTimer()">초기화</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 2) POMODORO TIMER DETAIL SCREEN -->
+        <div id="tool-pomodoro" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/뽀모돌.png" class="w-[110px] h-[110px] object-contain" alt="뽀모도로" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">뽀모도로 타이머</span>
+            </div>
+            <button class="text-[36px] font-semibold text-red-500" onclick="closeTool()">닫기</button>
+          </div>
+          <div class="tool-content-card justify-between items-center py-12">
+            <!-- Mode Badges -->
+            <div class="flex gap-4">
+              <span id="pomo-badge-focus" class="text-[28px] font-bold px-8 py-3 rounded-full bg-red-100 text-red-600 border border-red-200">집중 시간 (25분)</span>
+              <span id="pomo-badge-break" class="text-[28px] font-bold px-8 py-3 rounded-full bg-slate-100 text-slate-400 border border-slate-200">휴식 시간 (5분)</span>
+            </div>
+
+            <!-- Tomato Centered Timer Graphic -->
+            <div class="relative w-[480px] h-[480px] flex items-center justify-center">
+              <!-- Giant visual tomato vector outline and indicator -->
+              <svg class="w-[360px] h-[360px] text-red-500 absolute drop-shadow-xl" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 3c-.5-1-1.5-1.5-3-.5C8.3 3 8 4.2 8.5 5.5l-2-.5c-1 0-2 1-1.5 2 .5.8 1.5 1 2.5.5C5.3 9 4 10.5 4 12c0 4.4 3.6 8 8 8s8-3.6 8-8c0-1.5-1.3-3-3.5-4.5 1 .5 2 .3 2.5-.5.5-1-.5-2-1.5-2l-2 .5c.5-1.3.2-2.5-.5-3-1.5-1-2.5-.5-3 .5h-.1z" />
+                <path d="M12 2v2c0 .5.5 1 1 1s1-.5 1-1V2M12 11a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" fill="white" />
+              </svg>
+              <!-- Glowing digital ring overlapping -->
+              <div class="z-10 flex flex-col items-center">
+                <span id="pomo-display" class="font-mono text-[90px] font-extrabold text-white drop-shadow-lg tabular-nums">25:00</span>
+                <span id="pomo-status" class="text-[24px] font-bold text-white bg-red-600/60 px-6 py-1 rounded-full uppercase tracking-wider mt-2">공부하기</span>
+              </div>
+            </div>
+
+            <p class="text-[26px] font-medium text-slate-500 text-center leading-relaxed">
+              집중(25분) 후에는 5분 동안 머리를 부드럽게 식혀주세요.<br>
+              수업 능률을 올려주는 시간 배분법입니다.
+            </p>
+          </div>
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex gap-[20px] items-center">
+            <button id="pomo-primary" class="flex-1 h-[110px] text-[38px] font-semibold text-white bg-red-500 rounded-[24px] active:scale-95 transition shadow-lg shadow-red-500/20" onclick="togglePomo()">집중 시작</button>
+            <button class="flex-1 h-[110px] text-[38px] font-semibold text-red-500 bg-white border-2 border-red-500 rounded-[24px] active:scale-95 transition" onclick="resetPomo()">재설정</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 3) STOPWATCH DETAIL SCREEN -->
+        <div id="tool-stopwatch" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/스톰워치.png" class="w-[125px] h-[125px] object-contain" alt="스톱워치" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">스톱워치</span>
+            </div>
+            <button class="text-[36px] font-semibold text-emerald-500" onclick="closeTool()">닫기</button>
+          </div>
+          <div class="tool-content-card justify-between items-center py-10">
+            <!-- Millisecond precision display board -->
+            <div class="flex flex-col items-center mt-6">
+              <div class="flex items-baseline font-mono text-slate-800 tracking-tight select-all">
+                <span id="stopwatch-display-main" class="text-[108px] font-black tabular-nums">00:00</span>
+                <span id="stopwatch-display-ms" class="text-[64px] font-bold text-emerald-500 tabular-nums ml-2">.00</span>
+              </div>
+              <span class="text-[28px] font-bold text-slate-400 mt-2 uppercase tracking-widest">STATION STOPWATCH</span>
+            </div>
+
+            <!-- LAP RECORD SECTION -->
+            <div class="w-full flex-1 mx-4 my-8 rounded-2xl bg-slate-50 border border-slate-150 p-6 flex flex-col overflow-y-auto">
+              <div class="flex justify-between border-b pb-4 mb-4 text-[24px] font-bold text-slate-500 font-mono">
+                <span>기록 (LAP)</span>
+                <span>랩타입</span>
+                <span>총 소요시간</span>
+              </div>
+              <div id="stopwatch-laps" class="flex-1 flex flex-col gap-4 overflow-y-auto pr-2 text-[26px] font-medium text-slate-700 font-mono">
+                <div class="text-center text-slate-400 py-10 text-[26px]">기록된 랩 타임이 없습니다.</div>
+              </div>
+            </div>
+          </div>
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex gap-[20px] items-center">
+            <button id="stopwatch-primary" class="flex-1 h-[110px] text-[38px] font-semibold text-white bg-emerald-500 rounded-[24px] active:scale-95 transition shadow-lg shadow-emerald-500/20" onclick="toggleStopwatch()">출발</button>
+            <button id="stopwatch-secondary" class="flex-1 h-[110px] text-[38px] font-semibold text-emerald-600 bg-slate-100 hover:bg-slate-200 rounded-[24px] active:scale-95 transition" onclick="lapStopwatch()">기록</button>
+            <button class="w-[180px] h-[110px] text-[38px] font-semibold text-red-500 bg-white border-2 border-red-500 rounded-[24px] active:scale-95 transition" onclick="resetStopwatch()">재설정</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 4) WORLD CLOCK DETAIL SCREEN -->
+        <div id="tool-worldclock" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/세계시간.png" class="w-[132px] h-[132px] object-contain" alt="세계시간" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">세계시간</span>
+            </div>
+            <button class="text-[36px] font-semibold text-indigo-500" onclick="closeTool()">닫기</button>
+          </div>
+          <div class="tool-content-card py-10 justify-between items-stretch">
+            <span class="text-[30px] font-bold text-slate-600 mb-8 border-b pb-4">전세계 주요 도시의 현재 현황</span>
+            <!-- Grid of 5 world clocks -->
+            <div class="grid grid-cols-1 gap-6 flex-1 overflow-y-auto">
+              
+              <!-- SEOUL -->
+              <div class="flex justify-between items-center bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100">
+                <div class="flex gap-6 items-center">
+                  <!-- Vector Analog Clock SVG -->
+                  <svg class="w-[100px] h-[100px] bg-white rounded-full border-2 border-indigo-500" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="white"/>
+                    <line x1="50" y1="50" x2="50" y2="22" stroke="#1e293b" stroke-width="4" id="clock-seoul-hour" />
+                    <line x1="50" y1="50" x2="50" y2="12" stroke="#64748b" stroke-width="3.5" id="clock-seoul-min" />
+                    <line x1="50" y1="50" x2="50" y2="10" stroke="#f15b5b" stroke-width="1.5" id="clock-seoul-sec" />
+                    <circle cx="50" cy="50" r="4.5" fill="#f15b5b"/>
+                  </svg>
+                  <div class="flex flex-col">
+                    <span class="text-[34px] font-bold text-slate-800">대한민국, 서울</span>
+                    <span class="text-[20px] font-bold text-indigo-500">KST (UTC+9)</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span id="txt-seoul-time" class="font-mono text-[42px] font-black text-slate-900 tabular-nums">00:00:00</span>
+                  <p id="txt-seoul-date" class="text-[20px] font-medium text-slate-400 mt-2">5월 26일 (화)</p>
+                </div>
+              </div>
+
+              <!-- NEW YORK -->
+              <div class="flex justify-between items-center bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                <div class="flex gap-6 items-center">
+                  <svg class="w-[100px] h-[100px] bg-white rounded-full border-2 border-slate-400" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="white"/>
+                    <line x1="50" y1="50" x2="50" y2="24" stroke="#1e293b" stroke-width="4" id="clock-ny-hour" />
+                    <line x1="50" y1="50" x2="50" y2="14" stroke="#64748b" stroke-width="3.5" id="clock-ny-min" />
+                    <line x1="50" y1="50" x2="50" y2="12" stroke="#f15b5b" stroke-width="1.5" id="clock-ny-sec" />
+                    <circle cx="50" cy="50" r="4.5" fill="#f15b5b"/>
+                  </svg>
+                  <div class="flex flex-col">
+                    <span class="text-[34px] font-bold text-slate-800">미국, 뉴욕</span>
+                    <span class="text-[20px] font-bold text-slate-500">EDT (UTC-4)</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span id="txt-ny-time" class="font-mono text-[42px] font-black text-slate-900 tabular-nums">00:00:00</span>
+                  <p id="txt-ny-date" class="text-[20px] font-medium text-slate-400 mt-2">5월 25일 (월)</p>
+                </div>
+              </div>
+
+              <!-- LONDON -->
+              <div class="flex justify-between items-center bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                <div class="flex gap-6 items-center">
+                  <svg class="w-[100px] h-[100px] bg-white rounded-full border-2 border-slate-400" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="white"/>
+                    <line x1="50" y1="50" x2="50" y2="24" stroke="#1e293b" stroke-width="4" id="clock-london-hour" />
+                    <line x1="50" y1="50" x2="50" y2="14" stroke="#64748b" stroke-width="3.5" id="clock-london-min" />
+                    <line x1="50" y1="50" x2="50" y2="12" stroke="#f15b5b" stroke-width="1.5" id="clock-london-sec" />
+                    <circle cx="50" cy="50" r="4.5" fill="#f15b5b"/>
+                  </svg>
+                  <div class="flex flex-col">
+                    <span class="text-[34px] font-bold text-slate-800">영국, 런던</span>
+                    <span class="text-[20px] font-bold text-slate-500">BST (UTC+1)</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span id="txt-london-time" class="font-mono text-[42px] font-black text-slate-900 tabular-nums">00:00:00</span>
+                  <p id="txt-london-date" class="text-[20px] font-medium text-slate-400 mt-2">5월 26일 (화)</p>
+                </div>
+              </div>
+
+              <!-- SYDNEY -->
+              <div class="flex justify-between items-center bg-slate-50 rounded-2xl p-6 border border-slate-200">
+                <div class="flex gap-6 items-center">
+                  <svg class="w-[100px] h-[100px] bg-white rounded-full border-2 border-slate-400" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="46" fill="white"/>
+                    <line x1="50" y1="50" x2="50" y2="24" stroke="#1e293b" stroke-width="4" id="clock-sydney-hour" />
+                    <line x1="50" y1="50" x2="50" y2="14" stroke="#64748b" stroke-width="3.5" id="clock-sydney-min" />
+                    <line x1="50" y1="50" x2="50" y2="12" stroke="#f15b5b" stroke-width="1.5" id="clock-sydney-sec" />
+                    <circle cx="50" cy="50" r="4.5" fill="#f15b5b"/>
+                  </svg>
+                  <div class="flex flex-col">
+                    <span class="text-[34px] font-bold text-slate-800">호주, 시드니</span>
+                    <span class="text-[20px] font-bold text-slate-500">AEST (UTC+10)</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span id="txt-sydney-time" class="font-mono text-[42px] font-black text-slate-900 tabular-nums">00:00:00</span>
+                  <p id="txt-sydney-date" class="text-[20px] font-medium text-slate-400 mt-2">5월 26일 (화)</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex items-center justify-center">
+            <button class="w-full h-[110px] text-[38px] font-semibold text-white bg-indigo-500 rounded-[24px] active:scale-95 transition shadow-lg shadow-indigo-500/20" onclick="closeTool()">확인 완료</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 5) DRAWING CHALKBOARD DETAIL SCREEN -->
+        <div id="tool-paint" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/판서.png" class="w-[149px] h-[149px] object-contain" alt="그림판" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">그림판(판서)</span>
+            </div>
+            <button class="text-[36px] font-semibold text-purple-600" onclick="closeTool()">닫기</button>
+          </div>
+          
+          <div class="tool-content-card p-6 justify-between gap-6">
+            
+            <!-- Drawing Stage Canvas -->
+            <div class="relative flex-1 bg-white rounded-3xl overflow-hidden shadow-inner border border-slate-200" id="paint-canvas-container">
+              <canvas id="paint-canvas" class="w-full h-full"></canvas>
+            </div>
+
+            <!-- Toolbar Controls Row 1: Brush Colors & Eraser -->
+            <div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-150">
+              <span class="text-[24px] font-bold text-slate-500 mb-0">펜 색상</span>
+              <div class="flex gap-4">
+                <button class="paint-tool-btn active bg-slate-900 text-white" onclick="selectColor('#0f172a', this)" style="background-color: #0f172a;"></button>
+                <button class="paint-tool-btn bg-red-500" onclick="selectColor('#ef4444', this)" style="background-color: #ef4444;"></button>
+                <button class="paint-tool-btn bg-blue-500" onclick="selectColor('#3b82f6', this)" style="background-color: #3b82f6;"></button>
+                <button class="paint-tool-btn bg-emerald-500" onclick="selectColor('#10b981', this)" style="background-color: #10b981;"></button>
+                <button class="paint-tool-btn bg-amber-400" onclick="selectColor('#f59e0b', this)" style="background-color: #f59e0b;"></button>
+                <button class="paint-tool-btn bg-white border border-slate-300 flex items-center justify-center" onclick="selectColor('#ffffff', this)" style="background-color: #ffffff;">
+                  <span class="w-4 h-4 rounded-full border border-slate-400 bg-white"></span>
+                </button>
+                <!-- Eraser -->
+                <button class="paint-tool-btn bg-slate-200 border border-slate-300 flex items-center justify-center text-slate-600 font-bold text-[20px]" onclick="selectColor('eraser', this)">
+                  지우개
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar Controls Row 2: Brush Weights, Canvas Backgrounds, Stampers -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Grid brush size control -->
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-center justify-between">
+                <span class="text-[24px] font-bold text-slate-500">굵기</span>
+                <div class="flex gap-4">
+                  <button class="h-[60px] px-4 rounded-xl bg-white text-[20px] font-bold text-slate-700 border border-slate-200 active:scale-95" onclick="selectSize(5)">얇게</button>
+                  <button class="h-[60px] px-4 rounded-xl bg-[#006CFF] text-[20px] font-bold text-white border border-slate-200 active:scale-95" id="size-btn-medium" onclick="selectSize(15)">보통</button>
+                  <button class="h-[60px] px-4 rounded-xl bg-white text-[20px] font-bold text-slate-700 border border-slate-200 active:scale-95" onclick="selectSize(30)">두껍게</button>
+                </div>
+              </div>
+
+              <!-- BG styles Selector -->
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-center justify-between">
+                <span class="text-[24px] font-bold text-slate-500">배경</span>
+                <div class="flex gap-4">
+                  <button class="h-[60px] px-4 rounded-xl bg-white border border-slate-300 text-[20px] font-semibold text-slate-700 active:scale-95" onclick="selectPaintBg('white')">화이트드</button>
+                  <button class="h-[60px] px-4 rounded-xl bg-emerald-800 text-white text-[20px] font-semibold active:scale-95" onclick="selectPaintBg('green')">칠판</button>
+                  <button class="h-[60px] px-4 rounded-xl bg-blue-50 text-blue-800 text-[20px] font-semibold border border-blue-200 active:scale-95" onclick="selectPaintBg('grid')">그리드</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stamps panel -->
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-150 flex items-center justify-between">
+              <span class="text-[24px] font-bold text-slate-500">수업 스탬프</span>
+              <div class="flex gap-4">
+                <button class="h-[72px] w-[72px] text-[36px] bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-90 transition-all flex items-center justify-center" onclick="selectStamp('⭐')">⭐</button>
+                <button class="h-[72px] w-[72px] text-[36px] bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-90 transition-all flex items-center justify-center" onclick="selectStamp('❤️')">❤️</button>
+                <button class="h-[72px] w-[72px] text-[36px] bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-90 transition-all flex items-center justify-center" onclick="selectStamp('👍')">👍</button>
+                <button class="h-[72px] w-[72px] text-[36px] bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-90 transition-all flex items-center justify-center" onclick="selectStamp('💯')">💯</button>
+                <button class="h-[72px] w-[72px] text-[36px] bg-white rounded-2xl shadow-sm border border-slate-200 active:scale-90 transition-all flex items-center justify-center" onclick="selectStamp('✏️')">✏️</button>
+                <div class="w-[2px] h-[72px] bg-slate-300 mx-2"></div>
+                <button class="h-[72px] px-6 text-[22px] font-bold text-slate-500 bg-white border border-slate-200 rounded-2xl shadow-sm hover:bg-slate-100" id="stamp-indicator-btn" onclick="clearStamp()">그리기 모드</button>
+              </div>
+            </div>
+
+          </div>
+          
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex gap-[20px] items-center">
+            <button class="flex-1 h-[110px] text-[38px] font-semibold text-white bg-purple-500 rounded-[24px] active:scale-95 transition shadow-lg shadow-purple-500/20" onclick="clearPaintCanvas()">판서 전체 삭제</button>
+            <button class="flex-1 h-[110px] text-[38px] font-semibold text-purple-650 bg-white border-2 border-purple-500 rounded-[24px] active:scale-95 transition" onclick="closeTool()">종료하기</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 6) NOISE DECIBEL METER DETAIL SCREEN -->
+        <div id="tool-noise" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/소음.png" class="w-[149px] h-[149px] object-contain" alt="소음측정기" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">소음측정기</span>
+            </div>
+            <button class="text-[36px] font-semibold text-teal-500" onclick="closeTool()">닫기</button>
+          </div>
+          <div class="tool-content-card justify-between items-center py-10">
+            
+            <span id="noise-mic-status" class="text-[22px] font-bold text-slate-400 bg-slate-100 px-6 py-2 rounded-full border border-slate-200">
+              🎤 시뮬레이션 측정 모드 동작중 (터치하여 주변 반응 유도)
+            </span>
+
+            <!-- Big Dashboard Decibel Circle Arc -->
+            <div class="relative w-[480px] h-[480px] flex flex-col items-center justify-center">
+              
+              <!-- Decibel Dashboard Gauge Arc drawn via SVG -->
+              <svg class="absolute inset-0 w-[480px] h-[480px]" viewBox="0 0 100 100">
+                <!-- Background gray semi-circle -->
+                <path d="M 20 80 A 40 40 0 1 1 80 80" fill="none" stroke="#e2e8f0" stroke-width="8" stroke-linecap="round" />
+                <!-- Foreground glowing color status-driven semi-circle -->
+                <path id="noise-gauge-path" d="M 20 80 A 40 40 0 1 1 80 80" fill="none" stroke="#2dd4bf" stroke-width="8" stroke-linecap="round" stroke-dasharray="188.4" stroke-dashoffset="188.4" />
+              </svg>
+
+              <!-- Central status text readout -->
+              <div class="z-10 flex flex-col items-center mt-6">
+                <span id="noise-val-display" class="font-mono text-[114px] font-extrabold text-slate-800 leading-none tabular-nums">35</span>
+                <span class="text-[30px] font-bold text-slate-400 mb-2 font-sans">dB</span>
+                <div id="noise-alert-badge" class="text-[26px] font-black text-emerald-500 px-8 py-2 rounded-full bg-emerald-50 border border-emerald-200">평온함 (Quiet)</div>
+              </div>
+            </div>
+
+            <!-- Noise visual warning guideline list -->
+            <div class="w-full grid grid-cols-3 gap-4 px-4 text-center">
+              <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col items-center" id="noise-guide-quiet">
+                <span class="text-[28px] font-bold text-emerald-500">0 - 45dB</span>
+                <span class="text-[20px] font-semibold text-slate-400 mt-2">정숙함 (자습)</span>
+              </div>
+              <div class="bg-amber-50 border border-transparent rounded-2xl p-4 flex flex-col items-center" id="noise-guide-normal">
+                <span class="text-[28px] font-bold text-amber-500">46 - 70dB</span>
+                <span class="text-[20px] font-semibold text-slate-400 mt-2">보통 소음 (토론)</span>
+              </div>
+              <div class="bg-red-50 border border-transparent rounded-2xl p-4 flex flex-col items-center" id="noise-guide-loud">
+                <span class="text-[28px] font-bold text-red-500">71dB 이상</span>
+                <span class="text-[20px] font-semibold text-slate-400 mt-2">매우 시끄러움!</span>
+              </div>
+            </div>
+
+          </div>
+          <div class="layout-padding h-[240px] flex gap-[20px] items-center">
+            <button id="noise-mic-toggle" class="flex-1 h-[140px] text-[48px] font-semibold text-white bg-teal-500 rounded-[32px] active:scale-95 transition shadow-lg shadow-teal-500/20" onclick="initRealMicAudio()">실제 마이크 권한 연동하기</button>
+            <button class="w-[300px] h-[140px] text-[48px] font-semibold text-teal-600 bg-white border-2 border-teal-500 rounded-[32px] active:scale-95 transition" onclick="closeTool()">돌아가기</button>
+          </div>
+          <div class="layout-bottom-space"></div>
+        </div>
+
+        <!-- 7) PRESENT_PICKER (ROULETTE RANDOM PICK) DETAIL SCREEN -->
+        <div id="tool-picker" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/랜덤.png" class="w-[142px] h-[142px] object-contain" alt="발표자 선정" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">발표자 선정</span>
+            </div>
+            <button class="text-[36px] font-semibold text-orange-500" onclick="closeTool()">닫기</button>
+          </div>
+          
+          <div class="tool-content-card justify-between p-6 items-stretch gap-6">
+            
+            <!-- Dual Layout: Left (Student roster config editor) - Right (Interactive Spinning Roulette UI) -->
+            <div class="grid grid-cols-12 gap-6 flex-1 items-stretch">
+              
+              <!-- Student roster list textfield panel (4 cols of 12) -->
+              <div class="col-span-5 flex flex-col justify-between bg-slate-50 border border-slate-150 rounded-2xl p-6">
+                <div>
+                  <span class="text-[26px] font-black text-slate-600 block mb-2">학생 목록 설정</span>
+                  <span class="text-[18px] text-slate-400 block mb-4 border-b pb-2">줄바꿈 또는 쉼표(,)로 이름을 구분합니다.</span>
+                  <textarea id="picker-names-txt" class="w-full h-[400px] text-[24px] rounded-xl border border-slate-200 bg-white p-4 font-bold text-slate-700 leading-relaxed outline-none focus:border-orange-400 resize-none overflow-y-auto"></textarea>
+                </div>
+                <div class="flex gap-4">
+                  <button class="flex-1 h-[70px] bg-slate-200 text-slate-700 font-bold rounded-xl text-[20px]" onclick="resetStudentRoster()">기본 세팅</button>
+                  <button class="flex-1 h-[70px] bg-red-100 text-red-600 font-bold rounded-xl text-[20px]" onclick="clearStudentRoster()">비우기</button>
+                </div>
+              </div>
+
+              <!-- Spinning Roulette Circle Display Canvas Area (7 cols of 12) -->
+              <div class="col-span-7 bg-slate-50 border border-slate-150 rounded-2xl p-6 flex flex-col justify-center items-center relative">
+                
+                <!-- Confetti particles floating canvas -->
+                <canvas id="presenter-confetti" class="absolute inset-0 w-full h-full rounded-2xl pointer-events-none z-10"></canvas>
+
+                <!-- Centered Spinning Drum / Wheel -->
+                <div class="relative w-[500px] h-[500px]">
+                  
+                  <!-- Top Pin indicator -->
+                  <div class="absolute top-[-16px] left-[50%] translate-x-[-50%] w-[48px] h-[64px] z-20 flex flex-col items-center">
+                    <div class="w-0 h-0 border-l-[24px] border-l-transparent border-r-[24px] border-r-transparent border-t-[44px] border-t-red-500 drop-shadow-md"></div>
+                    <div class="w-4 h-4 rounded-full bg-slate-100 border-2 border-red-500 mt-[-8px]"></div>
+                  </div>
+
+                  <!-- Rotary wheel canvas elements inside container -->
+                  <div id="roulette-wheel-container" class="w-full h-full rounded-full border-[16px] border-white shadow-xl bg-white overflow-hidden transition-transform duration-[4000ms] cubic-bezier(0.1, 0.8, 0.1, 1)">
+                    <canvas id="roulette-canvas" width="468" height="468" class="w-full h-full"></canvas>
+                  </div>
+
+                  <!-- Circle Central Hub overlay -->
+                  <div class="absolute inset-x-[180px] inset-y-[180px] bg-white rounded-full border-8 border-orange-500 shadow-lg flex items-center justify-center z-10">
+                    <svg class="w-[60px] h-[60px] text-orange-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <line x1="12" y1="2" x2="12" y2="6"/>
+                      <line x1="12" y1="18" x2="12" y2="22"/>
+                      <polyline points="4.93,4.93 7.76,7.76"/>
+                      <polyline points="16.24,16.24 19.07,19.07"/>
+                      <line x1="2" y1="12" x2="6" y2="12"/>
+                      <line x1="18" y1="12" x2="22" y2="12"/>
+                      <polyline points="4.93,19.07 7.76,16.24"/>
+                      <polyline points="16.24,7.76 19.07,4.93"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Live Highlight Selected display box -->
+                <div id="picker-result-billboard" class="w-[480px] h-[90px] mt-6 flex items-center justify-center bg-white border-2 border-orange-300 rounded-2xl shadow-sm text-center">
+                  <span id="picker-result-txt" class="text-[34px] font-black text-slate-700">이름을 적고 돌려보세요!</span>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+          
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex gap-[20px] items-center">
+            <button id="picker-trigger-btn" class="flex-1 h-[110px] text-[38px] font-semibold text-white bg-orange-500 rounded-[24px] active:scale-95 transition shadow-lg shadow-orange-500/20" onclick="spinRoulette()">룰렛 회전하기 (뽑기!)</button>
+            <button class="w-[280px] h-[110px] text-[38px] font-semibold text-orange-650 bg-white border-2 border-orange-500 rounded-[24px] active:scale-95 transition" onclick="closeTool()">종료</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 8) INTERACTIVE INSTRUMENTS DETAIL SCREEN -->
+        <div id="tool-instruments" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/악기.png" class="w-[131px] h-[131px] object-contain" alt="악기" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">악기</span>
+            </div>
+            <button class="text-[36px] font-semibold text-violet-600" onclick="closeTool()">닫기</button>
+          </div>
+          <div class="tool-content-card justify-between py-10 items-stretch">
+            
+            <!-- Instruments selection switcher buttons -->
+            <div class="flex justify-around items-center bg-slate-50 p-4 border border-slate-200 rounded-3xl mx-4 mb-8">
+              <span class="text-[26px] font-bold text-slate-500">소리 종류 선택:</span>
+              <div class="flex gap-4">
+                <button id="inst-btn-piano" class="h-[70px] px-8 text-[22px] font-black rounded-2xl bg-violet-600 text-white shadow-sm" onclick="selectInstrumentMode('piano')">🎹 어린이 피아노</button>
+                <button id="inst-btn-xylo" class="h-[70px] px-8 text-[22px] font-black rounded-2xl bg-white text-slate-500 border border-slate-200" onclick="selectInstrumentMode('xylo')">🔔 실로폰 차임</button>
+                <button id="inst-btn-retro" class="h-[70px] px-8 text-[22px] font-black rounded-2xl bg-white text-slate-500 border border-slate-200" onclick="selectInstrumentMode('retro')">⚡ 레트로 칩튠</button>
+              </div>
+            </div>
+
+            <p class="text-center text-[24px] font-medium text-slate-400 mb-6 font-sans">
+              마우스 클릭 또는 키보드 숫자키 (1-8)를 눌러서 소리를 내어보세요!
+            </p>
+
+            <!-- Keyboard keys area -->
+            <div class="grid grid-cols-8 gap-[12px] px-4 flex-1 items-end mt-4">
+              
+              <!-- Key 1: Do -->
+              <div class="piano-key bg-white border-b-[16px] border-b-red-500 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('C4')" style="background-color: #ffeef2;">
+                <span class="text-[34px] font-black text-red-650 mb-4">도</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Do (1)</span>
+              </div>
+
+              <!-- Key 2: Re -->
+              <div class="piano-key bg-white border-b-[16px] border-b-orange-400 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('D4')" style="background-color: #fff4eb;">
+                <span class="text-[34px] font-black text-orange-650 mb-4">레</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Re (2)</span>
+              </div>
+
+              <!-- Key 3: Mi -->
+              <div class="piano-key bg-white border-b-[16px] border-b-amber-300 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('E4')" style="background-color: #fefbeb;">
+                <span class="text-[34px] font-black text-amber-650 mb-4">미</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Mi (3)</span>
+              </div>
+
+              <!-- Key 4: Fa -->
+              <div class="piano-key bg-white border-b-[16px] border-b-emerald-400 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('F4')" style="background-color: #ecfdf5;">
+                <span class="text-[34px] font-black text-emerald-650 mb-4">파</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Fa (4)</span>
+              </div>
+
+              <!-- Key 5: Sol -->
+              <div class="piano-key bg-white border-b-[16px] border-b-cyan-400 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('G4')" style="background-color: #ecfeff;">
+                <span class="text-[34px] font-black text-cyan-650 mb-4">솔</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Sol (5)</span>
+              </div>
+
+              <!-- Key 6: La -->
+              <div class="piano-key bg-white border-b-[16px] border-b-indigo-500 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('A4')" style="background-color: #eef2ff;">
+                <span class="text-[34px] font-black text-indigo-650 mb-4">라</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">La (6)</span>
+              </div>
+
+              <!-- Key 7: Si -->
+              <div class="piano-key bg-white border-b-[16px] border-b-violet-500 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('B4')" style="background-color: #f5f3ff;">
+                <span class="text-[34px] font-black text-violet-650 mb-4">시</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Si (7)</span>
+              </div>
+
+              <!-- Key 8: High Do -->
+              <div class="piano-key bg-white border-b-[16px] border-b-fuchsia-500 flex flex-col justify-end items-center pb-8 border border-slate-200" onclick="triggerPianoTone('C5')" style="background-color: #fdf4ff;">
+                <span class="text-[34px] font-black text-fuchsia-650 mb-4">도</span>
+                <span class="text-[20px] font-bold text-slate-400 font-mono">Do+ (8)</span>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex items-center justify-center">
+            <button class="w-full h-[110px] text-[38px] font-semibold text-white bg-violet-600 rounded-[24px] active:scale-95 transition shadow-lg shadow-violet-500/20" onclick="closeTool()">연주 끝내기 (닫기)</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+        <!-- 9) LADDER GAME (GHOST LEG) DETAIL SCREEN -->
+        <div id="tool-ladder" class="tool-detail-view justify-between">
+          <div class="layout-padding h-[120px] flex items-center justify-between border-b border-white-op bg-white/20">
+            <button class="w-[52px] h-[52px] flex items-center justify-center text-slate-800" onclick="closeTool()">
+              <svg class="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="flex items-center justify-center gap-6 flex-1">
+              <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
+                <img src="/src/assets/images/사다리.png" class="w-[151px] h-[151px] object-contain" alt="사다리" referrerPolicy="no-referrer">
+              </div>
+              <span class="text-[48px] font-semibold text-slate-800">사다리</span>
+            </div>
+            <button class="text-[36px] font-semibold text-cyan-600" onclick="closeTool()">닫기</button>
+          </div>
+          
+          <div class="tool-content-card justify-between p-6 items-stretch gap-6">
+            
+            <!-- Count configuration and reset controls -->
+            <div class="flex justify-between items-center bg-slate-50 p-4 border border-slate-250 rounded-2xl mx-2">
+              <span class="text-[24px] font-bold text-slate-500">인원 수 조절 (2 ~ 6명):</span>
+              <div class="flex items-center gap-4">
+                <button class="w-[60px] h-[60px] text-[30px] font-bold text-slate-650 bg-white border rounded-xl active:scale-90" onclick="adjustLadderCount(-1)">-</button>
+                <span id="ladder-count-display" class="text-[34px] font-black text-slate-800 px-4">4명</span>
+                <button class="w-[60px] h-[60px] text-[30px] font-bold text-slate-650 bg-white border rounded-xl active:scale-90" onclick="adjustLadderCount(1)">+</button>
+                <div class="w-[2px] h-[60px] bg-slate-300 mx-2"></div>
+                <button class="h-[60px] px-6 text-[20px] font-bold text-cyan-700 bg-white border border-cyan-200 rounded-xl" onclick="regenerateLadderLayout()">새 사다리 생성</button>
+              </div>
+            </div>
+
+            <!-- Main Ladder Graphic Interactor Area -->
+            <div class="relative flex-1 bg-white rounded-3xl border border-slate-150 overflow-hidden shadow-inner flex flex-col items-stretch p-4">
+              
+              <!-- Top names inputs row (dynamically rendered in JS) -->
+              <div id="ladder-top-inputs" class="h-[70px] flex justify-between px-6 z-10 gap-4 mb-4"></div>
+              
+              <!-- Draw lines Canvas wrapper space -->
+              <div class="relative flex-1 bg-white" id="ladder-canvas-container">
+                <canvas id="ladder-canvas" class="absolute inset-0 w-full h-full"></canvas>
+              </div>
+
+              <!-- Bottom prizes inputs row (dynamically rendered in JS) -->
+              <div id="ladder-bottom-inputs" class="h-[70px] flex justify-between px-6 z-10 gap-4 mt-4"></div>
+
+            </div>
+
+            <p id="ladder-instruction-label" class="text-center text-[24px] font-semibold text-[#006CFF] animate-pulse">
+              정렬을 마쳤다면 아래 시작 버튼을 누르고 게임을 즐겨주세요!
+            </p>
+
+          </div>
+          <!-- Bottom CTA Block (160px) -->
+          <div class="layout-padding h-[160px] flex gap-[20px] items-center">
+            <button id="ladder-trigger-btn" class="flex-1 h-[110px] text-[38px] font-semibold text-white bg-cyan-500 rounded-[24px] active:scale-95 transition shadow-lg shadow-cyan-500/20" onclick="triggerLadderAnimation()">사다리 게임 시작!</button>
+            <button class="w-[280px] h-[110px] text-[38px] font-semibold text-cyan-650 bg-white border-2 border-cyan-500 rounded-[24px] active:scale-95 transition" onclick="closeTool()">돌아가기</button>
+          </div>
+          <div class="detail-bottom-space"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Main JavaScript Bundle -->
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>

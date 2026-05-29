@@ -1,0 +1,6 @@
+{
+  "name": "수업 도우미 (Classroom Helper)",
+  "description": "1080x1920 portrait fixed signage Classroom Helper with various interactive classroom tools.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
