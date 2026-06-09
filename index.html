@@ -150,9 +150,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/시계.png" class="w-[138px] h-[138px] object-contain" alt="타이머" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">타이머</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">타이머</span>
             </div>
-            <button class="text-[36px] font-semibold text-[#006CFF]" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-timer.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-[#006CFF] hover:bg-blue-600 rounded-[20px] active:scale-95 transition shadow-lg shadow-blue-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-[#006CFF]" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           <!-- Body Card -->
           <div class="tool-content-card justify-between items-center py-12">
@@ -193,9 +198,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/뽀모돌.png" class="w-[110px] h-[110px] object-contain" alt="뽀모도로" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">뽀모도로 타이머</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">뽀모도로 타이머</span>
             </div>
-            <button class="text-[36px] font-semibold text-red-500" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-pomodoro-timer.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-red-500 hover:bg-red-600 rounded-[20px] active:scale-95 transition shadow-lg shadow-red-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-red-500" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           <div class="tool-content-card justify-between items-center py-12">
             <!-- Mode Badges -->
@@ -241,9 +251,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/스톰워치.png" class="w-[125px] h-[125px] object-contain" alt="스톱워치" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">스톱워치</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">스톱워치</span>
             </div>
-            <button class="text-[36px] font-semibold text-emerald-500" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-stopwatch-ht1r.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-emerald-500 hover:bg-emerald-600 rounded-[20px] active:scale-95 transition shadow-lg shadow-emerald-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-emerald-500" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           <div class="tool-content-card justify-between items-center py-10">
             <!-- Millisecond precision display board -->
@@ -286,9 +301,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/세계시간.png" class="w-[132px] h-[132px] object-contain" alt="세계시간" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">세계시간</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">세계시간</span>
             </div>
-            <button class="text-[36px] font-semibold text-indigo-500" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-worldtime.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-indigo-500 hover:bg-indigo-600 rounded-[20px] active:scale-95 transition shadow-lg shadow-indigo-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-indigo-500" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           <div class="tool-content-card py-10 justify-between items-stretch">
             <span class="text-[30px] font-bold text-slate-600 mb-8 border-b pb-4">전세계 주요 도시의 현재 현황</span>
@@ -550,9 +570,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/랜덤.png" class="w-[142px] h-[142px] object-contain" alt="발표자 선정" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">발표자 선정</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">발표자 선정</span>
             </div>
-            <button class="text-[36px] font-semibold text-orange-500" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-wheelgame-8pv1.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-[20px] active:scale-95 transition shadow-lg shadow-orange-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-orange-500" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           
           <div class="tool-content-card justify-between p-6 items-stretch gap-6">
@@ -637,9 +662,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/악기.png" class="w-[131px] h-[131px] object-contain" alt="악기" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">악기</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">악기</span>
             </div>
-            <button class="text-[36px] font-semibold text-violet-600" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-piano-2qo9.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-violet-600 hover:bg-violet-700 rounded-[20px] active:scale-95 transition shadow-lg shadow-violet-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-violet-600" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           <div class="tool-content-card justify-between py-10 items-stretch">
             
@@ -728,9 +758,14 @@
               <div class="w-[166px] h-[166px] flex items-center justify-center bg-[#EBF4FF] rounded-full border-2 border-white shadow-[inset_0_2px_6px_rgba(255,255,255,0.6),0_6px_12px_rgba(0,108,255,0.08)] overflow-hidden p-2">
                 <img src="/src/assets/images/사다리.png" class="w-[151px] h-[151px] object-contain" alt="사다리" referrerPolicy="no-referrer">
               </div>
-              <span class="text-[48px] font-semibold text-slate-800">사다리</span>
+              <span class="text-[48px] font-semibold text-slate-800 font-sans tracking-tight">사다리</span>
             </div>
-            <button class="text-[36px] font-semibold text-cyan-600" onclick="closeTool()">닫기</button>
+            <div class="flex items-center gap-6">
+              <button onclick="goToService('https://claix-piano-m529.vercel.app/')" class="h-[74px] px-6 flex items-center justify-center gap-2 text-[26px] font-bold text-white bg-cyan-600 hover:bg-cyan-700 rounded-[20px] active:scale-95 transition shadow-lg shadow-cyan-500/15">
+                <span>서비스 바로가기 ↗</span>
+              </button>
+              <button class="text-[36px] font-semibold text-cyan-600" onclick="closeTool()">닫기</button>
+            </div>
           </div>
           
           <div class="tool-content-card justify-between p-6 items-stretch gap-6">

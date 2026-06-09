@@ -56,6 +56,22 @@ function stopAllActiveIntervals() {
 
 // Global Nav Handlers
 window.openTool = function(toolId) {
+  // Direct redirect mapping for externalized tools
+  const toolUrls = {
+    'timer': 'https://claix-timer.vercel.app/',
+    'pomodoro': 'https://claix-pomodoro-timer.vercel.app/',
+    'stopwatch': 'https://claix-stopwatch-ht1r.vercel.app/',
+    'worldclock': 'https://claix-worldtime.vercel.app/',
+    'picker': 'https://claix-wheelgame-8pv1.vercel.app/',
+    'instruments': 'https://claix-piano-2qo9.vercel.app/',
+    'ladder': 'https://claix-piano-m529.vercel.app/'
+  };
+
+  if (toolUrls[toolId]) {
+    window.goToService(toolUrls[toolId]);
+    return; // Don't show local tool detail views
+  }
+
   document.getElementById('view-dashboard').style.display = 'none';
   
   const views = document.querySelectorAll('.tool-detail-view');
@@ -84,6 +100,17 @@ window.closeTool = function() {
   
   const views = document.querySelectorAll('.tool-detail-view');
   views.forEach(v => v.classList.remove('active'));
+};
+
+window.goToService = function(url) {
+  // Dynamically create an anchor to open cleanly in a new tab bypassing popup blockers
+  const tempLink = document.createElement('a');
+  tempLink.href = url;
+  tempLink.target = '_blank';
+  tempLink.rel = 'noopener noreferrer';
+  document.body.appendChild(tempLink);
+  tempLink.click();
+  document.body.removeChild(tempLink);
 };
 
 
