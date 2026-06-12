@@ -58,13 +58,15 @@ function stopAllActiveIntervals() {
 window.openTool = function(toolId) {
   // Direct redirect mapping for externalized tools
   const toolUrls = {
-    'timer': 'https://claix-timer.vercel.app/',
-    'pomodoro': 'https://claix-pomodoro-timer.vercel.app/',
-    'stopwatch': 'https://claix-stopwatch-ht1r.vercel.app/',
-    'worldclock': 'https://claix-worldtime.vercel.app/',
-    'picker': 'https://claix-wheelgame-8pv1.vercel.app/',
-    'instruments': 'https://claix-piano-2qo9.vercel.app/',
-    'ladder': 'https://claix-piano-m529.vercel.app/'
+    'timer': 'https://claix-pomodoro-timer-g7ph.vercel.app/',
+    'pomodoro': 'https://claix-pomodoro-timer-rgld.vercel.app/',
+    'stopwatch': 'https://claix-stopwatch2.vercel.app/',
+    'worldclock': 'https://claix-worldtime2-x9e8.vercel.app/',
+    'paint': 'https://claix-board-6n1z.vercel.app/',
+    'noise': 'https://claix-piano-3sum.vercel.app/',
+    'picker': 'https://claix-wheelgame-pmii.vercel.app/',
+    'instruments': 'https://claix-piano-abpk.vercel.app/',
+    'ladder': 'https://claix-ladder-8ly1.vercel.app/'
   };
 
   if (toolUrls[toolId]) {
@@ -103,14 +105,29 @@ window.closeTool = function() {
 };
 
 window.goToService = function(url) {
-  // Dynamically create an anchor to open cleanly in a new tab bypassing popup blockers
-  const tempLink = document.createElement('a');
-  tempLink.href = url;
-  tempLink.target = '_blank';
-  tempLink.rel = 'noopener noreferrer';
-  document.body.appendChild(tempLink);
-  tempLink.click();
-  document.body.removeChild(tempLink);
+  // Navigate in the same window/frame to preserve referrer and browser history.
+  // We append multiple back/redirect parameters so that the Vercel sub-app knows exactly how to return to our dev/shared app in case it gets parsed from the query string.
+  try {
+    const currentUrl = window.location.href;
+    const targetUrl = new URL(url);
+    
+    // Append possible redirect keys with our current actual Cloud Run URL
+    targetUrl.searchParams.set('redirect', currentUrl);
+    targetUrl.searchParams.set('redirect_uri', currentUrl);
+    targetUrl.searchParams.set('back', currentUrl);
+    targetUrl.searchParams.set('backUrl', currentUrl);
+    targetUrl.searchParams.set('returnUrl', currentUrl);
+    targetUrl.searchParams.set('callback', currentUrl);
+    targetUrl.searchParams.set('from', currentUrl);
+    targetUrl.searchParams.set('url', currentUrl);
+    targetUrl.searchParams.set('parent', currentUrl);
+    targetUrl.searchParams.set('origin', window.location.origin);
+    
+    window.location.href = targetUrl.toString();
+  } catch (e) {
+    // Fallback if URL object creation fails for some reason
+    window.location.href = url;
+  }
 };
 
 
