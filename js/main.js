@@ -98,10 +98,55 @@ window.openTool = function(toolId) {
 
 window.closeTool = function() {
   stopAllActiveIntervals();
-  document.getElementById('view-dashboard').style.display = 'flex';
   
-  const views = document.querySelectorAll('.tool-detail-view');
-  views.forEach(v => v.classList.remove('active'));
+  // Parse any passed redirection or referral address from URL search parameters or referrer header
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectKeys = [
+    'redirect', 'redirect_uri', 'redirect_url', 'redirectUrl',
+    'back', 'back_url', 'backUrl',
+    'returnUrl', 'return_url', 'return', 'return_to', 'returnTo',
+    'callback', 'callback_url', 'callbackUrl',
+    'from', 'url', 'parent', 'origin', 'domain', 'host',
+    'ret', 'ret_url', 'retUrl', 'retURL',
+    'exit', 'exit_url', 'exitUrl',
+    'referrer', 'ref', 'source', 'home', 'homeUrl', 'home_url',
+    'prev', 'prev_url', 'prevUrl', 'next', 'to', 'baseUrl', 'base_url', 'clean_url'
+  ];
+  
+  let targetUrl = '';
+  for (const key of redirectKeys) {
+    const val = urlParams.get(key);
+    if (val && (val.startsWith('http://') || val.startsWith('https://'))) {
+      targetUrl = val;
+      break;
+    }
+  }
+  
+  // Check browser document referrer as fallback
+  if (!targetUrl && document.referrer && (document.referrer.startsWith('http://') || document.referrer.startsWith('https://'))) {
+    targetUrl = document.referrer;
+  }
+  
+  // Default final destination to the main classroom helper portal
+  if (!targetUrl) {
+    targetUrl = 'https://claix-toolkit-ljja.vercel.app/';
+  }
+  
+  // Determine if we are currently running on the main toolkit page itself
+  const isMainPage = window.location.hostname.includes('claix-toolkit-ljja') || 
+                     window.location.hostname.includes('localhost') || 
+                     window.location.hostname.includes('127.0.0.1') ||
+                     window.location.href.includes('run.app');
+  
+  if (isMainPage && !urlParams.has('standalone')) {
+    // Local modal closure for main app or local dev preview
+    document.getElementById('view-dashboard').style.display = 'flex';
+    const views = document.querySelectorAll('.tool-detail-view');
+    views.forEach(v => v.classList.remove('active'));
+  } else {
+    // Standalone deployed pages redirect back to the central list
+    window.location.href = targetUrl;
+  }
 };
 
 window.goToService = function(url) {
@@ -109,19 +154,34 @@ window.goToService = function(url) {
   // We append multiple back/redirect parameters so that the Vercel sub-app knows exactly how to return to our dev/shared app in case it gets parsed from the query string.
   try {
     const currentUrl = window.location.href;
+    const cleanUrl = window.location.origin + window.location.pathname;
+    const originUrl = window.location.origin;
     const targetUrl = new URL(url);
     
-    // Append possible redirect keys with our current actual Cloud Run URL
-    targetUrl.searchParams.set('redirect', currentUrl);
-    targetUrl.searchParams.set('redirect_uri', currentUrl);
-    targetUrl.searchParams.set('back', currentUrl);
-    targetUrl.searchParams.set('backUrl', currentUrl);
-    targetUrl.searchParams.set('returnUrl', currentUrl);
-    targetUrl.searchParams.set('callback', currentUrl);
-    targetUrl.searchParams.set('from', currentUrl);
-    targetUrl.searchParams.set('url', currentUrl);
-    targetUrl.searchParams.set('parent', currentUrl);
-    targetUrl.searchParams.set('origin', window.location.origin);
+    // An exhaustive list of parameter keys commonly used for redirection/back-navigation callbacks
+    const redirectKeys = [
+      'redirect', 'redirect_uri', 'redirect_url', 'redirectUrl',
+      'back', 'back_url', 'backUrl',
+      'returnUrl', 'return_url', 'return', 'return_to', 'returnTo',
+      'callback', 'callback_url', 'callbackUrl',
+      'from', 'url', 'parent', 'origin', 'domain', 'host',
+      'ret', 'ret_url', 'retUrl', 'retURL',
+      'exit', 'exit_url', 'exitUrl',
+      'referrer', 'ref', 'source', 'home', 'homeUrl', 'home_url',
+      'prev', 'prev_url', 'prevUrl', 'next', 'to'
+    ];
+    
+    redirectKeys.forEach(key => {
+      // Set to current complete URL
+      targetUrl.searchParams.set(key, currentUrl);
+    });
+    
+    // Also provide variations for clean / base / origin configurations in case they only accept simple absolute landing pages
+    targetUrl.searchParams.set('origin', originUrl);
+    targetUrl.searchParams.set('domain', originUrl);
+    targetUrl.searchParams.set('baseUrl', cleanUrl);
+    targetUrl.searchParams.set('base_url', cleanUrl);
+    targetUrl.searchParams.set('clean_url', cleanUrl);
     
     window.location.href = targetUrl.toString();
   } catch (e) {
