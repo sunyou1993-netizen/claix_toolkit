@@ -25,6 +25,9 @@ function initApp() {
     alertBox.classList.add('show');
     setTimeout(() => alertBox.classList.remove('show'), duration);
   };
+
+  // Run the sub-app automatic routing system on startup
+  detectAndRouteSubApp();
 }
 
 function handleViewportRescale() {
@@ -40,40 +43,91 @@ function handleViewportRescale() {
 }
 
 function stopAllActiveIntervals() {
-  activeIntervals.forEach(id => clearInterval(id));
+  try {
+    activeIntervals.forEach(id => clearInterval(id));
+  } catch (e) {
+    console.warn("Failed to clear active intervals:", e);
+  }
   activeIntervals = [];
   
   // Stop mic if running
   if (noiseMicStream) {
-    noiseMicStream.getTracks().forEach(track => track.stop());
+    try {
+      noiseMicStream.getTracks().forEach(track => track.stop());
+    } catch (e) {
+      console.warn("Failed to stop mic tracks:", e);
+    }
     noiseMicStream = null;
   }
   if (noiseAudioCtx) {
-    noiseAudioCtx.close();
+    try {
+      noiseAudioCtx.close();
+    } catch (e) {
+      console.warn("Failed to close audio context:", e);
+    }
     noiseAudioCtx = null;
   }
 }
 
-// Global Nav Handlers
-window.openTool = function(toolId) {
-  // Direct redirect mapping for externalized tools
-  const toolUrls = {
-    'timer': 'https://claix-pomodoro-timer-g7ph.vercel.app/',
-    'pomodoro': 'https://claix-pomodoro-timer-rgld.vercel.app/',
-    'stopwatch': 'https://claix-stopwatch2.vercel.app/',
-    'worldclock': 'https://claix-worldtime2-x9e8.vercel.app/',
-    'paint': 'https://claix-board-6n1z.vercel.app/',
-    'noise': 'https://claix-piano-3sum.vercel.app/',
-    'picker': 'https://claix-wheelgame-pmii.vercel.app/',
-    'instruments': 'https://claix-piano-abpk.vercel.app/',
-    'ladder': 'https://claix-ladder-8ly1.vercel.app/'
+// Automatic sub-app detection and routing handler
+function detectAndRouteSubApp() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const curHost = window.location.hostname;
+  
+  const toolSubdomains = {
+    'claix-pomodoro-timer-g7ph': 'timer',
+    'claix-pomodoro-timer-tk2v': 'pomodoro',
+    'claix-stopwatch2-la7h': 'stopwatch',
+    'claix-worldtime3-shtk': 'worldclock',
+    'claix-board-nvw9': 'paint',
+    'claix-piano-3sum': 'noise',
+    'claix-wheelgame-pmii': 'picker',
+    'claix-piano-abpk': 'instruments',
+    'claix-ladder-8ly1': 'ladder'
   };
-
-  if (toolUrls[toolId]) {
-    window.goToService(toolUrls[toolId]);
-    return; // Don't show local tool detail views
+  
+  let toolId = null;
+  
+  // 1. Detect tool based on custom domain hostname
+  const isSubAppDomain = Object.keys(toolSubdomains).some(sub => curHost.includes(sub));
+  for (const [sub, tId] of Object.entries(toolSubdomains)) {
+    if (curHost.includes(sub)) {
+      toolId = tId;
+      break;
+    }
+  }
+  
+  // 2. Query parameter fallback for standalone/tool views in alternative previews
+  if (!toolId) {
+    const qTool = urlParams.get('tool') || urlParams.get('standalone') || urlParams.get('view');
+    if (qTool && qTool !== 'true') {
+      toolId = qTool;
+    }
+  }
+  
+  const knownTools = ['timer', 'pomodoro', 'stopwatch', 'worldclock', 'paint', 'noise', 'picker', 'instruments', 'ladder'];
+  if (toolId && knownTools.includes(toolId)) {
+    // Force set standalone state inside options if needed and load the tool directly
+    openToolLocally(toolId);
   }
 
+  // If in standalone/subapp mode, hide all redundant "goToService" buttons since we're already on the service!
+  if (isSubAppDomain || urlParams.has('standalone') || urlParams.has('view')) {
+    const hideButtons = () => {
+      document.querySelectorAll('button[onclick^="goToService"]').forEach(btn => {
+        btn.style.display = 'none';
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', hideButtons);
+    } else {
+      hideButtons();
+    }
+  }
+}
+
+// Launches a tool directly in local view mode without external redirection
+function openToolLocally(toolId) {
   document.getElementById('view-dashboard').style.display = 'none';
   
   const views = document.querySelectorAll('.tool-detail-view');
@@ -84,7 +138,7 @@ window.openTool = function(toolId) {
     target.classList.add('active');
   }
   
-  // Launch tool callbacks
+  // Trigger appropriate init script for the selected widget module
   if (toolId === 'timer') startTimerModule();
   if (toolId === 'pomodoro') startPomoModule();
   if (toolId === 'stopwatch') startStopwatchModule();
@@ -94,71 +148,73 @@ window.openTool = function(toolId) {
   if (toolId === 'picker') startPickerModule();
   if (toolId === 'instruments') startInstrumentsModule();
   if (toolId === 'ladder') startLadderModule();
+}
+
+// Global Nav Handlers
+window.openTool = function(toolId) {
+  isClosingTool = false; // Reset close guard lock on navigation
+  // Direct redirect mapping for externalized tools
+  const toolUrls = {
+    'timer': 'https://claix-pomodoro-timer-g7ph.vercel.app/',
+    'pomodoro': 'https://claix-pomodoro-timer-tk2v.vercel.app/',
+    'stopwatch': 'https://claix-stopwatch2-la7h.vercel.app/',
+    'worldclock': 'https://claix-worldtime3-shtk.vercel.app/',
+    'paint': 'https://claix-board-nvw9.vercel.app/',
+    'noise': 'https://claix-piano-3sum.vercel.app/',
+    'picker': 'https://claix-wheelgame-pmii.vercel.app/',
+    'instruments': 'https://claix-piano-abpk.vercel.app/',
+    'ladder': 'https://claix-ladder-8ly1.vercel.app/'
+  };
+
+  const curHost = window.location.hostname;
+  const isTargetHost = toolUrls[toolId] && (new URL(toolUrls[toolId])).hostname === curHost;
+
+  // Only redirect if a tool url is mapped and it is NOT the current hostname
+  if (toolUrls[toolId] && !isTargetHost) {
+    window.goToService(toolUrls[toolId]);
+    return;
+  }
+
+  // Otherwise, load page locally
+  openToolLocally(toolId);
 };
+
+let isClosingTool = false;
 
 window.closeTool = function() {
-  stopAllActiveIntervals();
-  
-  // Parse any passed redirection or referral address from URL search parameters or referrer header
-  const urlParams = new URLSearchParams(window.location.search);
-  const redirectKeys = [
-    'redirect', 'redirect_uri', 'redirect_url', 'redirectUrl',
-    'back', 'back_url', 'backUrl',
-    'returnUrl', 'return_url', 'return', 'return_to', 'returnTo',
-    'callback', 'callback_url', 'callbackUrl',
-    'from', 'url', 'parent', 'origin', 'domain', 'host',
-    'ret', 'ret_url', 'retUrl', 'retURL',
-    'exit', 'exit_url', 'exitUrl',
-    'referrer', 'ref', 'source', 'home', 'homeUrl', 'home_url',
-    'prev', 'prev_url', 'prevUrl', 'next', 'to', 'baseUrl', 'base_url', 'clean_url'
-  ];
-  
-  let targetUrl = '';
-  for (const key of redirectKeys) {
-    const val = urlParams.get(key);
-    if (val && (val.startsWith('http://') || val.startsWith('https://'))) {
-      targetUrl = val;
-      break;
-    }
+  if (isClosingTool) return;
+  isClosingTool = true;
+
+  try {
+    stopAllActiveIntervals();
+  } catch (e) {
+    console.warn("Error inside stopAllActiveIntervals during close:", e);
   }
   
-  // Check browser document referrer as fallback
-  if (!targetUrl && document.referrer && (document.referrer.startsWith('http://') || document.referrer.startsWith('https://'))) {
-    targetUrl = document.referrer;
-  }
-  
-  // Default final destination to the main classroom helper portal
-  if (!targetUrl) {
-    targetUrl = 'https://claix-toolkit-ljja.vercel.app/';
-  }
-  
-  // Determine if we are currently running on the main toolkit page itself
-  const isMainPage = window.location.hostname.includes('claix-toolkit-ljja') || 
+  // Determine if we are currently running on the main toolkit page itself.
+  const isMainPage = window.location.hostname.includes('claix-toolkit-xzrp') || 
                      window.location.hostname.includes('localhost') || 
                      window.location.hostname.includes('127.0.0.1') ||
-                     window.location.href.includes('run.app');
+                     window.location.hostname.includes('run.app');
   
-  if (isMainPage && !urlParams.has('standalone')) {
+  if (isMainPage) {
+    isClosingTool = false; // Reset lock for local modal usage
     // Local modal closure for main app or local dev preview
-    document.getElementById('view-dashboard').style.display = 'flex';
+    const dashboardEl = document.getElementById('view-dashboard');
+    if (dashboardEl) {
+      dashboardEl.style.display = 'flex';
+    }
     const views = document.querySelectorAll('.tool-detail-view');
     views.forEach(v => v.classList.remove('active'));
-  } else {
-    // Standalone deployed pages redirect back to the central list
-    window.location.href = targetUrl;
-  }
-};
-
-window.goToService = function(url) {
-  // Navigate in the same window/frame to preserve referrer and browser history.
-  // We append multiple back/redirect parameters so that the Vercel sub-app knows exactly how to return to our dev/shared app in case it gets parsed from the query string.
-  try {
-    const currentUrl = window.location.href;
-    const cleanUrl = window.location.origin + window.location.pathname;
-    const originUrl = window.location.origin;
-    const targetUrl = new URL(url);
     
-    // An exhaustive list of parameter keys commonly used for redirection/back-navigation callbacks
+    // Smoothly clear queries so URL looks clean again
+    if (window.history.pushState) {
+      const cleanLocation = window.location.protocol + "//" + window.location.host + window.location.pathname;
+      window.history.pushState({ path: cleanLocation }, '', cleanLocation);
+    }
+  } else {
+    // Standalone deployed sub-apps: Navigate back dynamically to previous parent toolkit URL!
+    const urlParams = new URLSearchParams(window.location.search);
     const redirectKeys = [
       'redirect', 'redirect_uri', 'redirect_url', 'redirectUrl',
       'back', 'back_url', 'backUrl',
@@ -168,12 +224,112 @@ window.goToService = function(url) {
       'ret', 'ret_url', 'retUrl', 'retURL',
       'exit', 'exit_url', 'exitUrl',
       'referrer', 'ref', 'source', 'home', 'homeUrl', 'home_url',
+      'prev', 'prev_url', 'prevUrl', 'next', 'to', 'baseUrl', 'base_url', 'clean_url'
+    ];
+    
+    let targetUrl = '';
+    
+    // 1. Check if the referrer or redirect params contains a run.app (AI Studio dev preview URL)
+    // This ensures we always return to the correct preview environment if we came from one!
+    let referrerUrl = '';
+    for (const key of redirectKeys) {
+      const val = urlParams.get(key);
+      if (val && val.includes('run.app')) {
+        referrerUrl = val;
+        break;
+      }
+    }
+    if (!referrerUrl && document.referrer && document.referrer.includes('run.app')) {
+      referrerUrl = document.referrer;
+    }
+
+    if (referrerUrl) {
+      targetUrl = referrerUrl;
+    } else {
+      // 2. Otherwise parse general redirect parameter or referrer
+      for (const key of redirectKeys) {
+        const val = urlParams.get(key);
+        if (val && (val.startsWith('http://') || val.startsWith('https://'))) {
+          targetUrl = val;
+          break;
+        }
+      }
+      if (!targetUrl && document.referrer && (document.referrer.startsWith('http://') || document.referrer.startsWith('https://'))) {
+        targetUrl = document.referrer;
+      }
+    }
+
+    // Default fallback to the main classroom helper portal
+    if (!targetUrl) {
+      targetUrl = 'https://claix-toolkit-xzrp.vercel.app/';
+    }
+
+    // If targetUrl's hostname ends up being the same as the current host (self-referential loop), reset it to the main toolkit
+    try {
+      const parsedTarget = new URL(targetUrl);
+      if (parsedTarget.hostname === window.location.hostname) {
+        targetUrl = 'https://claix-toolkit-xzrp.vercel.app/';
+      }
+    } catch (e) {}
+
+    // Force return directly to main toolkit for safety unless we have a specific dev preview run.app referrer
+    if (!targetUrl.includes('run.app')) {
+      targetUrl = 'https://claix-toolkit-xzrp.vercel.app/';
+    }
+
+    // Try window.top first to breakout of iframe if we are same-origin/embedded safely, fallback to window.location
+    let canAccessTop = false;
+    try {
+      if (window.top && window.top !== window) {
+        const testHost = window.top.location.host;
+        canAccessTop = !!testHost;
+      }
+    } catch (e) {
+      canAccessTop = false;
+    }
+
+    try {
+      if (canAccessTop) {
+        window.top.location.replace(targetUrl);
+      } else {
+        window.location.replace(targetUrl);
+      }
+    } catch (e) {
+      window.location.href = targetUrl;
+    }
+    // Defensive final fallback
+    setTimeout(() => {
+      isClosingTool = false; // Reset lock in case fallback was reached or user remains on page
+      window.location.href = targetUrl;
+    }, 50);
+  }
+};
+
+window.goToService = function(url) {
+  // Navigate in the same window/frame to preserve referrer and browser history.
+  // We append multiple back/redirect parameters so that the Vercel sub-app knows exactly how to return to our dev/shared app in case it gets parsed from the query string.
+  try {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    const originUrl = window.location.origin;
+    const targetUrl = new URL(url);
+    
+    // An exhaustive list of parameter keys commonly used for redirection/back-navigation callbacks
+    // We omit sensitive keys like 'url' or 'host' to avoid clobbering internal target routing parameters
+    const redirectKeys = [
+      'redirect', 'redirect_uri', 'redirect_url', 'redirectUrl',
+      'back', 'back_url', 'backUrl',
+      'returnUrl', 'return_url', 'return', 'return_to', 'returnTo',
+      'callback', 'callback_url', 'callbackUrl',
+      'from', 'parent',
+      'ret', 'ret_url', 'retUrl', 'retURL',
+      'exit', 'exit_url', 'exitUrl',
+      'referrer', 'ref', 'source', 'home', 'homeUrl', 'home_url',
       'prev', 'prev_url', 'prevUrl', 'next', 'to'
     ];
     
     redirectKeys.forEach(key => {
-      // Set to current complete URL
-      targetUrl.searchParams.set(key, currentUrl);
+      // Set to clean fallback URL so sub-apps don't get polluted by old queries
+      targetUrl.searchParams.set(key, cleanUrl);
     });
     
     // Also provide variations for clean / base / origin configurations in case they only accept simple absolute landing pages
