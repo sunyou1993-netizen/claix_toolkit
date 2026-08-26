@@ -12,6 +12,10 @@
 body {
   font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
   background-color: #0f172a; /* Slate-900 background for outer screen bezel display */
+  background-image: url("/src/assets/images/image265.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -29,6 +33,10 @@ body {
   width: 1080px;
   height: 1920px;
   background-color: #EBF4FF;
+  background-image: url("/src/assets/images/image265.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   position: relative;
   overflow: hidden;
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.61);
@@ -102,6 +110,10 @@ body {
   position: absolute;
   inset: 0;
   background-color: #EBF4FF;
+  background-image: url("/src/assets/images/image265.png");
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   z-index: 50;
   display: flex;
   flex-direction: column;

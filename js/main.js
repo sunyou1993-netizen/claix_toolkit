@@ -158,7 +158,6 @@ window.openTool = function(toolId) {
     'timer': 'https://claix-pomodoro-timer-g7ph.vercel.app/',
     'pomodoro': 'https://claix-pomodoro-timer-tk2v.vercel.app/',
     'stopwatch': 'https://claix-stopwatch2-la7h.vercel.app/',
-    'worldclock': 'https://claix-worldtime3-shtk.vercel.app/',
     'paint': 'https://claix-board-nvw9.vercel.app/',
     'noise': 'https://claix-piano-3sum.vercel.app/',
     'picker': 'https://claix-wheelgame-pmii.vercel.app/',
